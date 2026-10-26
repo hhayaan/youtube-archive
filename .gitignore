@@ -1,0 +1,9 @@
+*.py[cod]
+.test-tmp/
+.uploader-state/
+.venv/
+__pycache__/
+client_secret*.json
+/tests/batch-test-*/
+/tests/block-recovery-*/
+/tests/synthetic-transfer-*/

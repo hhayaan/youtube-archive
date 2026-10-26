@@ -1,0 +1,7 @@
+# Edit these settings and replace the sample records before uploading.
+# Source root: D:\Clips
+# Channel ID: YOUR_YOUTUBE_CHANNEL_ID
+
+001 | Game One\first clip.mp4 | First clip
+002 | Game One\second clip.mkv | Second clip
+003 | D:\Clips\Game Two\last clip.mp4 | Last clip

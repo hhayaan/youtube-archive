@@ -2,36 +2,37 @@
 
 Upload an ordered list of videos to a YouTube channel, **unlisted**, one at a time. The program pauses between batches so you can review the results. It reads source videos directly without modifying or copying them.
 
-## First-time setup
+The user-facing files are `start.cmd`, `upload-order.txt`, and this README. Application code, dependencies, and contributor guidance are in `data/`. The tracked `tests/` folder is for development and is not needed to run the uploader.
+
+## Setup
 
 1. Install **Python 3.11 or newer** on Windows, including the Python launcher or adding Python to PATH.
 2. Keep the uploader and your video source in separate folders. Neither folder may contain the other.
 3. Create a Google Cloud project, enable **YouTube Data API v3**, and create a **Desktop app** OAuth client. Configure its consent settings for your account and these scopes:
    - `https://www.googleapis.com/auth/youtube.readonly`
    - `https://www.googleapis.com/auth/youtube.upload`
-4. Download the client JSON and put it **beside `Upload Videos.cmd`**. Its name must begin with `client_secret` and end in `.json`; keep exactly one matching file there. For example, `client_secret.json` works. Use your own credentials; do not share the file.
-5. Create `YouTube Upload Order.txt` using the format below. `YouTube Upload Order.example.txt` is a template you can copy and edit.
-6. Double-click **Upload Videos.cmd**. On a fresh installation it creates a local `.venv` and installs `requirements.txt` automatically. Setup does not sign in or upload videos.
+4. Download the client JSON and put it **beside `start.cmd`**. Its name must begin with `client_secret` and end in `.json`; keep exactly one matching file there. For example, `client_secret.json` works. Use your own credentials; do not share the file.
+5. Edit the supplied `upload-order.txt` template using the format below.
+6. Double-click **start.cmd**. On a fresh installation it creates a local `.venv` and installs `data/requirements.txt` automatically. Setup does not sign in or upload videos.
 
 Google's [YouTube API setup guide](https://developers.google.com/youtube/data/getting-started) and [Desktop OAuth guide](https://developers.google.com/identity/protocols/oauth2/native-app) explain the Cloud project and client setup. If your consent configuration uses test users, include the Google account you will sign in with.
 
-## Upload-order file
+## Upload order file
 
-The UTF-8 text file contains the **source folder, destination channel, and ordered video records**. Configure everything here; no Python edits are needed.
+The `upload-order.txt` text file contains the **source folder, channel ID, and ordered video records**. Configure everything in here.
 
 ```text
 # Source root: D:\Clips
 # Channel ID: YOUR_YOUTUBE_CHANNEL_ID
-# Destination channel: My archive
 
 001 | Game One\first clip.mp4 | First clip
 002 | Game One\second clip.mkv | Second clip
-003 | D:\Clips\Game Two\last clip.mp4 | Last clip
+003 | Game Two\last clip.mp4 | Last clip
 ```
 
-Replace the source root and channel ID with your own values. A channel ID is the public 24-character identifier beginning with `UC`, not an email, handle, or channel URL. The destination channel name is optional and is only a display label; the **ID** is checked after sign-in and against existing progress.
+Replace the source root and channel ID with your own values. A channel ID is the public 24-character identifier beginning with `UC`, not an email, handle, or channel URL. The **channel ID** is checked after sign-in and against existing progress.
 
-Each record has exactly three fields separated by **` | `**:
+Each record has exactly three fields separated by **` | `**, including the spaces: **`Number | Path | Title`**
 
 | Field | Required content |
 | --- | --- |
@@ -47,7 +48,7 @@ Accepted video extensions are `.mp4`, `.mkv`, `.mov`, `.webm`, `.avi`, `.m4v`, `
 
 ## Use the uploader
 
-The main launcher is **Upload Videos.cmd**. It immediately previews the next batch, with a default size of **10**:
+The main launcher is **start.cmd**. It immediately previews the next batch, with a default size of **10**:
 
 - **Enter:** start sign-in and upload the displayed batch.
 - **B:** change the batch size, then return to the preview.
@@ -60,8 +61,8 @@ After each batch, review the completed video links in the console or `.uploader-
 For an offline preview or status check, use the same launcher from a terminal:
 
 ```powershell
-& '.\Upload Videos.cmd' --preview --batch-size 5
-& '.\Upload Videos.cmd' --status
+& '.\start.cmd' --preview --batch-size 5
+& '.\start.cmd' --status
 ```
 
 These modes do not sign in, contact YouTube, or access source videos. On a fresh installation the launcher's dependency setup can still contact the Python package repository.
@@ -80,9 +81,9 @@ Source videos are opened read-only and streamed directly. The uploader does not 
 
 ## Reuse or share
 
-Share the code, `Upload Videos.cmd`, `requirements.txt`, this README, and the example queue. Each user supplies their own actual `YouTube Upload Order.txt` and client JSON. Exclude **client JSON files, `.uploader-state`, `.venv`, personal upload lists, and test/cache folders** from a public copy.
+Share `start.cmd`, the entire `data/` folder, this README, and the template in `upload-order.txt`. Keep `tests/` in the Git repository for contributors; `data/AGENTS.md` is optional developer guidance and has no runtime role. Each user edits their own copy and supplies their own client JSON. Exclude **client JSON files, `.uploader-state`, `.venv`, filled-in personal upload lists, and generated test/cache files** from a public copy; publish only the generic queue template.
 
-On another computer, recreate `.venv` through the main launcher instead of copying it. For a new archive, edit the example's source root and channel ID, add your ordered rows, and save it as `YouTube Upload Order.txt`. Existing absolute lists work too; relative paths make changing a source folder easier before starting an archive.
+On another computer, recreate `.venv` through the main launcher instead of copying it. For a new archive, edit the source root and channel ID in `upload-order.txt` and replace the sample records with your ordered rows. Existing absolute lists work too; relative paths make changing a source folder easier before starting an archive.
 
 ## Offline tests
 
